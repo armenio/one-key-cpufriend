@@ -6,8 +6,11 @@
 # Only support most 5th-8th CPU yet, older CPUs don't use X86PlatformPlugin.kext.
 # This script depends on CPUFriend(https://github.com/acidanthera/CPUFriend) a lot, thanks to PMHeart.
 
-# Current board-id
-BOARD_ID="$(ioreg -lw0 | grep -i "board-id" | sed -e '/[^<]*</s///; s/\"//g; s/\>//; s/\>>//')"
+BOARD_ID="$1"
+if [ "$BOARD_ID" == "" ]; then
+  # Current board-id
+  BOARD_ID="$(ioreg -lw0 | grep -i "board-id" | sed -e '/[^<]*</s///; s/\"//g; s/\>//; s/\>>//')"
+fi
 
 # Display style setting
 BOLD="\033[1m"
@@ -17,6 +20,12 @@ OFF="\033[m"
 
 # Corresponding plist
 X86_PLIST="/System/Library/Extensions/IOPlatformPluginFamily.kext/Contents/PlugIns/X86PlatformPlugin.kext/Contents/Resources/${BOARD_ID}.plist"
+
+# When argument 2 is provided
+if [ "$2" != "" ]; then
+  # Assumes it is a directory, different than the system default
+  X86_PLIST="$(echo "$2" | sed -e 's/\/$//')/${BOARD_ID}.plist"
+fi
 
 # supported models
 EPP_SUPPORTED_MODELS=(
