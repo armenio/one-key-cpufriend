@@ -6,8 +6,15 @@
 # Only support most 5th-8th CPU yet, older CPUs don't use X86PlatformPlugin.kext.
 # This script depends on CPUFriend(https://github.com/acidanthera/CPUFriend) a lot, thanks to PMHeart.
 
-BOARD_ID="$1"
+# Check for external preset variable
 if [ "$BOARD_ID" == "" ]; then
+	# Attempt to use argument 1
+	BOARD_ID="$1"
+fi
+
+if [ "$BOARD_ID" != "" ]; then
+  BOARD_ID="$(echo "$BOARD_ID" | sed -e 's/\.plist$//')"
+else
   # Current board-id
   BOARD_ID="$(ioreg -lw0 | grep -i "board-id" | sed -e '/[^<]*</s///; s/\"//g; s/\>//; s/\>>//')"
 fi
@@ -18,13 +25,17 @@ RED="\033[1;31m"
 GREEN="\033[1;32m"
 OFF="\033[m"
 
-# Corresponding plist
-X86_PLIST="/System/Library/Extensions/IOPlatformPluginFamily.kext/Contents/PlugIns/X86PlatformPlugin.kext/Contents/Resources/${BOARD_ID}.plist"
+# Check for external preset variable
+if [ "$X86_PLIST" == "" ]; then
+  # Attempt to use argument 2
+  X86_PLIST="$2"
+fi
 
-# When argument 2 is provided
-if [ "$2" != "" ]; then
-  # Assumes it is a directory, different than the system default
-  X86_PLIST="$(echo "$2" | sed -e 's/\/$//')/${BOARD_ID}.plist"
+if [ "$X86_PLIST" != "" ]; then
+  X86_PLIST="$(echo "$X86_PLIST" | sed -e 's/\/$//')/${BOARD_ID}.plist"
+else
+  # Corresponding plist
+  X86_PLIST="/System/Library/Extensions/IOPlatformPluginFamily.kext/Contents/PlugIns/X86PlatformPlugin.kext/Contents/Resources/${BOARD_ID}.plist"
 fi
 
 # supported models
