@@ -29,7 +29,7 @@ By using this script, no file under the System folder will be edited. If you are
 - Run this script in Terminal
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevezhengshiqi/one-key-cpufriend/master/one-key-cpufriend.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/armenio/one-key-cpufriend/master/one-key-cpufriend.sh)"
 ```
 
 - Copy `CPUFriend.kext` and `CPUFriendDataProvider.kext` from desktop to `/CLOVER/kexts/Other/` and restart.
@@ -54,3 +54,5 @@ Thanks to [Acidanthera](https://github.com/acidanthera) and [PMHeart](https://gi
 Thanks to [shuhung](https://www.tonymacx86.com/members/shuhung.957282) for providing [configuration modification ideas](https://www.tonymacx86.com/threads/skylake-hwp-enable.214915/page-7).
 
 Thanks to [PMheart](https://github.com/PMheart) and [xzhih](https://github.com/xzhih) for giving me advice.
+
+Thanks to [stevezhengshiqi](https://github.com/stevezhengshiqi) for that great work
