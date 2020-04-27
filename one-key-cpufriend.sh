@@ -406,11 +406,49 @@ function generateKext(){
   echo "Generating CPUFriendDataProvider.kext"
   ./ResourceConverter.sh --kext "$BOARD_ID.plist"
   cp -r CPUFriendDataProvider.kext "$HOME/Desktop/"
+}
+
+# Generate ssdt_data.dsl and move to desktop
+function generateSSDT(){
+  echo
+  echo "Generating ssdt_data.dsl"
+  ./ResourceConverter.sh --acpi "$BOARD_ID.plist"
+  cp ssdt_data.dsl "$HOME/Desktop/"
+}
+
+# Generate Resource and move to desktop
+function generateResource(){
+  echo
+  echo "-----------------------------------------"
+  echo "|******** Choose Resource Format ********|"
+  echo "-----------------------------------------"
+  echo "(1) Kext [ recommended ]"
+  echo "(2) ACPI"
+  echo -e "${BOLD}Which option you want to choose? (1/2)${OFF}"
+  read -rp ":" resource_selection
+  case ${resource_selection} in
+    1)
+    generateKext
+    ;;
+
+    2)
+    generateSSDT
+    ;;
+    
+    *)
+    echo -e "[ ${RED}ERROR${OFF} ]: Invalid input, closing the script"
+    clean
+    exit 1
+    ;;
+  esac
 
   # Copy CPUFriend.kext to Desktop
   cp -r CPUFriend.kext "$HOME/Desktop/"
 
   echo -e "[ ${GREEN}OK${OFF} ]Generate complete"
+
+  # return the user choice
+  return ${resource_selection}
 }
 
 # Delete tmp folder and end
@@ -435,10 +473,23 @@ function main(){
     changeLFM
     changeEPP
   fi
-  generateKext
+  generateResource
+  resource_format=$?
   clean
-  echo -e "[ ${GREEN}OK${OFF} ]This is the end of the script, please copy CPUFriend and CPUFriendDataProvider"
+  
+  echo -e -n "[ ${GREEN}OK${OFF} ]This is the end of the script, please copy CPUFriend"
+  
+  if [[ ${resource_format} == 1 ]]; then
+    echo -n " and CPUFriendDataProvider"
+  fi
+
+  echo 
   echo "from desktop to /CLOVER/kexts/Other/(or L/E/)"
+
+  if [[ ${resource_format} == 2 ]]; then
+    echo -e "${GREEN}ALSO${OFF}, compile ssdt_data.dsl from desktop to /CLOVER/ACPI/patched/"
+  fi
+
   exit 0
 }
 
